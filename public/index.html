@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Last Modified Dates</title>
+</head>
+
+<body>
+    <h1>Last Modified Dates</h1>
+
+    <form id="urlForm">
+        <label for="urlInput">Enter URL:</label>
+        <input type="text" id="urlInput" name="urlInput">
+        <button type="submit">Fetch Last Modified Date</button>
+    </form>
+
+    <p id="datesList"></p>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlForm = document.getElementById('urlForm');
+            const datesList = document.getElementById('datesList');
+
+            urlForm.addEventListener('submit', (event) => {
+                event.preventDefault(); // Prevents the default form submission behavior
+
+                const urlInput = document.getElementById('urlInput').value;
+
+                fetchLastModified(urlInput)
+                    .then(data => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${urlInput}: ${data.lastModified}`;
+                        datesList.appendChild(listItem);
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+            });
+
+            function fetchLastModified(url) {
+                return fetch('/last-modified', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url })
+                })
+                    .then(response => response.json());
+            }
+        });
+
+    </script>
+</body>
+
+</html>
